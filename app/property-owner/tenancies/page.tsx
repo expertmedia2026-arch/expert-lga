@@ -1,4 +1,4 @@
-import { TenanciesPage } from "@/components/owner/dashboard";
+import { TenanciesPage } from "@/components/owner/tenancies-page";
 
 export const metadata = {
   title: "Tenancies — Expert LGA",

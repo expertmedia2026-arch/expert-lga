@@ -9,6 +9,11 @@ type FieldErrors = {
   password?: string;
 };
 
+const demoAdmin = {
+  email: "amina@lga.gov",
+  password: "demo1234",
+};
+
 export function AdminLoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -31,6 +36,12 @@ export function AdminLoginForm() {
     return nextErrors;
   }
 
+  function fillDemo() {
+    setEmail(demoAdmin.email);
+    setPassword(demoAdmin.password);
+    setErrors({});
+  }
+
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validate(email, password);
@@ -42,6 +53,36 @@ export function AdminLoginForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="mt-8 flex flex-col gap-5">
+      <div className="border border-line bg-paper-raised px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-mono text-[11px] tracking-[0.18em] text-copper uppercase">
+              Demo login
+            </p>
+            <p className="mt-2 text-sm text-ink-muted">
+              Amina Yusuf · Housing officer
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={fillDemo}
+            className="shrink-0 text-xs font-medium tracking-wide text-forest uppercase hover:text-copper"
+          >
+            Use demo
+          </button>
+        </div>
+        <dl className="mt-3 grid gap-2 text-sm">
+          <div className="flex flex-wrap items-baseline gap-x-2">
+            <dt className="text-ink-muted">Email</dt>
+            <dd className="font-mono text-ink">{demoAdmin.email}</dd>
+          </div>
+          <div className="flex flex-wrap items-baseline gap-x-2">
+            <dt className="text-ink-muted">Password</dt>
+            <dd className="font-mono text-ink">{demoAdmin.password}</dd>
+          </div>
+        </dl>
+      </div>
+
       <div>
         <label htmlFor="email" className="text-sm font-medium text-ink">
           Work email

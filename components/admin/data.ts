@@ -13,45 +13,6 @@ export type Application = {
   updated: string;
 };
 
-export const users = [
-  {
-    name: "Amina Yusuf",
-    email: "amina@lga.gov",
-    role: "Housing officer",
-    status: "Active",
-  },
-  {
-    name: "Kunle Adeyemi",
-    email: "kunle@lga.gov",
-    role: "Housing officer",
-    status: "Active",
-  },
-  {
-    name: "Ada Okonkwo",
-    email: "ada@email.com",
-    role: "Tenant",
-    status: "Active",
-  },
-  {
-    name: "Ibrahim Sule",
-    email: "ibrahim@email.com",
-    role: "Tenant",
-    status: "Active",
-  },
-  {
-    name: "Musa Bello",
-    email: "musa@email.com",
-    role: "Property owner",
-    status: "Active",
-  },
-  {
-    name: "Chioma Eze",
-    email: "chioma@email.com",
-    role: "Property owner",
-    status: "Invited",
-  },
-];
-
 export const applications: Application[] = [
   {
     ref: "LGA-2026-1842",

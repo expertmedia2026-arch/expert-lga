@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { UserRole } from "@/generated/prisma/enums";
+import { UserRole, UserStatus } from "@/generated/prisma/enums";
 import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 
@@ -12,11 +12,16 @@ const roleByLabel: Record<string, UserRole> = {
   "Property Owner": UserRole.PROPERTY_OWNER,
 };
 
+const statusByLabel: Record<string, UserStatus> = {
+  Active: UserStatus.ACTIVE,
+  Invited: UserStatus.INVITED,
+};
+
 export type CreateUserResult =
   | { ok: true }
   | {
       ok: false;
-      field: "name" | "email" | "password" | "role" | "lga";
+      field: "name" | "email" | "password" | "role" | "lga" | "status";
       message: string;
     };
 
@@ -83,12 +88,14 @@ export async function updateUser(input: {
   email: string;
   password: string;
   role: string;
+  status: string;
   lgaId: string;
 }): Promise<CreateUserResult> {
   const name = input.name.trim();
   const email = input.email.trim().toLowerCase();
   const password = input.password;
   const role = roleByLabel[input.role];
+  const status = statusByLabel[input.status];
 
   if (!name) return { ok: false, field: "name", message: "Enter a name." };
   if (!email) return { ok: false, field: "email", message: "Enter an email." };
@@ -103,6 +110,9 @@ export async function updateUser(input: {
     };
   }
   if (!role) return { ok: false, field: "role", message: "Choose a role." };
+  if (!status) {
+    return { ok: false, field: "status", message: "Choose a status." };
+  }
   const membership = await membershipLgaId(role, input.lgaId);
   if (!membership.ok) return membership;
 
@@ -113,6 +123,7 @@ export async function updateUser(input: {
         name,
         email,
         role,
+        status,
         lgaId: membership.lgaId,
         ...(password ? { passwordHash: await hashPassword(password) } : {}),
       },

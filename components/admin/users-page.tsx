@@ -15,6 +15,8 @@ const roles = [
   "Property Owner",
 ] as const;
 
+const statuses = ["Active", "Invited"] as const;
+
 export type LgaOption = {
   id: string;
   name: string;
@@ -37,6 +39,7 @@ type FieldErrors = {
   email?: string;
   password?: string;
   role?: string;
+  status?: string;
   lga?: string;
 };
 
@@ -59,6 +62,7 @@ export function UsersPage({
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("");
+  const [status, setStatus] = useState("");
   const [lgaId, setLgaId] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [deleteError, setDeleteError] = useState("");
@@ -78,6 +82,7 @@ export function UsersPage({
     setPassword("");
     setShowPassword(false);
     setRole("");
+    setStatus("");
     setLgaId("");
     setErrors({});
     setDeleteError("");
@@ -94,6 +99,7 @@ export function UsersPage({
     setPassword("");
     setShowPassword(false);
     setRole("");
+    setStatus("");
     setLgaId("");
     setErrors({});
     setMode("add");
@@ -107,6 +113,7 @@ export function UsersPage({
     setPassword("");
     setShowPassword(false);
     setRole(user.role);
+    setStatus(user.status);
     setLgaId(user.lgaId ?? "");
     setErrors({});
     setMode("edit");
@@ -182,6 +189,7 @@ export function UsersPage({
     else if (role !== "Super Admin" && role !== "Admin" && !lgaId) {
       nextErrors.lga = "Choose an LGA.";
     }
+    if (editing && !status) nextErrors.status = "Choose a status.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -194,6 +202,7 @@ export function UsersPage({
             email,
             password,
             role,
+            status,
             lgaId,
           })
         : await createUser({ name, email, password, role, lgaId });
@@ -450,6 +459,30 @@ export function UsersPage({
                     <p className="mt-2 text-sm text-copper">{errors.role}</p>
                   ) : null}
                 </div>
+                {editing ? (
+                  <div>
+                    <label htmlFor="user-status" className="text-sm font-medium">
+                      Status
+                    </label>
+                    <select
+                      id="user-status"
+                      value={status}
+                      onChange={(event) => setStatus(event.target.value)}
+                      aria-invalid={errors.status ? true : undefined}
+                      className="mt-2 h-12 w-full rounded-[10px] border border-line bg-paper px-3 text-sm outline-none focus:border-forest"
+                    >
+                      <option value="">Select a status</option>
+                      {statuses.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.status ? (
+                      <p className="mt-2 text-sm text-copper">{errors.status}</p>
+                    ) : null}
+                  </div>
+                ) : null}
                 <div className="col-span-2">
                   <label htmlFor="user-lga" className="text-sm font-medium">
                     LGA

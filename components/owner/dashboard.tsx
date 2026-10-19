@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notices, owner, properties, records, stats, tenancies } from "./data";
+import { notices, owner, properties, records, stats } from "./data";
 
 const tone: Record<string, string> = {
   Occupied: "bg-sage text-forest",
@@ -128,34 +128,6 @@ function PropertyList({ rows }: { rows: typeof properties }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-export function TenanciesPage() {
-  return (
-    <div className="mx-auto max-w-6xl">
-      <PageIntro
-        title="Tenancies"
-        intro="Occupants on the plots you have let. Plot 3 is owner occupied and plot 12 is vacant."
-      />
-      <ul className="mt-6 border border-line bg-paper-raised">
-        {tenancies.map((row) => (
-          <li
-            key={row.tenant}
-            className="grid gap-3 border-b border-line px-4 py-4 last:border-b-0 md:grid-cols-[1fr_8rem_7rem] md:items-center"
-          >
-            <div>
-              <p className="font-medium">{row.tenant}</p>
-              <p className="text-sm text-ink-muted">
-                {row.plot} · since {row.since}
-              </p>
-            </div>
-            <p className="text-sm">{row.balance}</p>
-            <Status value={row.rent} />
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
