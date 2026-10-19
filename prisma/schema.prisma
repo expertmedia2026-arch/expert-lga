@@ -24,6 +24,30 @@ enum LgaStatus {
   ONBOARDING
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  PREFER_NOT_TO_SAY
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+  SEPARATED
+}
+
+enum PropertyType {
+  FLAT
+  HOUSE
+  BUNGALOW
+  SHOP
+  OFFICE
+  WAREHOUSE
+  MIXED_USE
+}
+
 model User {
   id           String     @id @default(cuid())
   name         String
@@ -34,6 +58,7 @@ model User {
   lgaId        String?
   lga          Lga?       @relation("LgaMembers", fields: [lgaId], references: [id], onDelete: SetNull)
   chairedLgas  Lga[]      @relation("LgaChairman")
+  tenants      Tenant[]   @relation("PropertyOwnerTenants")
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -42,19 +67,69 @@ model User {
 }
 
 model Lga {
-  id         String    @id @default(cuid())
+  id           String    @id @default(cuid())
   code         String    @unique
   name         String
   state        String
   status       LgaStatus @default(ONBOARDING)
   chairmanName String?
   chairmanId   String?
-  chairman   User?     @relation("LgaChairman", fields: [chairmanId], references: [id], onDelete: SetNull)
-  members    User[]    @relation("LgaMembers")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  chairman     User?     @relation("LgaChairman", fields: [chairmanId], references: [id], onDelete: SetNull)
+  members      User[]    @relation("LgaMembers")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@unique([state, name])
   @@unique([chairmanId])
   @@map("lgas")
+}
+
+model Tenant {
+  id String @id @default(cuid())
+
+  // Personal information
+  avatarUrl       String?
+  surname         String
+  otherNames      String
+  personalEmail   String
+  phone           String
+  gender          Gender
+  dateOfBirth     DateTime @db.Date
+  maritalStatus   MaritalStatus
+  occupation      String
+  employer        String?
+  countryOfOrigin String
+  stateOfOrigin   String
+  localGovernment String
+  homeTown        String
+  dependents      Int      @default(0)
+
+  // Tenancy information
+  propertyLabel   String
+  unitNumber      String
+  propertyType    PropertyType
+  tenancyStart    DateTime @db.Date
+  tenancyEnd      DateTime @db.Date
+  amountPaid      Decimal  @db.Decimal(14, 2)
+  outstandingBalance Decimal @db.Decimal(14, 2)
+
+  // Next of kin / emergency contact
+  kinFullName     String
+  kinRelationship String
+  kinPhone        String
+  kinAddress      String
+
+  // Tenant login details
+  loginEmail   String  @unique
+  passwordHash String
+
+  ownerId String?
+  owner   User?   @relation("PropertyOwnerTenants", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([propertyLabel])
+  @@map("tenants")
 }
