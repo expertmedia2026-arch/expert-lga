@@ -853,3 +853,10 @@ export const nigeriaLgas = {
 } as const;
 
 export const nigeriaStates = Object.keys(nigeriaLgas);
+
+export function lgasForState(state: string): readonly string[] {
+  if (state in nigeriaLgas) {
+    return nigeriaLgas[state as keyof typeof nigeriaLgas];
+  }
+  return [];
+}

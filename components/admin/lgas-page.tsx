@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createLga, deleteLga, updateLga } from "@/app/super-admin/lgas/actions";
 import { createLgaId } from "@/lib/lga-id";
-import { nigeriaLgas, nigeriaStates } from "./nigeria-lgas";
+import { lgasForState, nigeriaStates } from "./nigeria-lgas";
 
 const statuses = ["Onboarding", "Active"] as const;
 
@@ -48,10 +48,7 @@ export function LgasPage({ lgas }: { lgas: LgaRow[] }) {
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const stateRef = useRef<HTMLSelectElement>(null);
   const editing = mode === "edit";
-  const localGovernments =
-    stateName in nigeriaLgas
-      ? nigeriaLgas[stateName as keyof typeof nigeriaLgas]
-      : [];
+  const localGovernments = lgasForState(stateName);
 
   function close() {
     setName("");
@@ -138,9 +135,7 @@ export function LgasPage({ lgas }: { lgas: LgaRow[] }) {
     const nextErrors: FieldErrors = {};
     if (!stateName) nextErrors.state = "Choose a state.";
     if (!name) nextErrors.name = "Choose a local government.";
-    else if (
-      !localGovernments.includes(name as (typeof localGovernments)[number])
-    ) {
+    else if (!localGovernments.includes(name)) {
       nextErrors.name = "Choose a local government in the selected state.";
     } else if (
       rows.some(

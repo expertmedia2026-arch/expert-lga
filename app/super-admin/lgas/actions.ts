@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { nigeriaLgas } from "@/components/admin/nigeria-lgas";
+import { lgasForState } from "@/components/admin/nigeria-lgas";
 import { LgaStatus } from "@/generated/prisma/enums";
 import { isLgaId } from "@/lib/lga-id";
 import { prisma } from "@/lib/prisma";
@@ -29,14 +29,13 @@ export async function createLga(input: {
   const state = input.state.trim();
   const chairman = input.chairman.trim();
   const code = input.code.trim().toUpperCase();
-  const localGovernments =
-    state in nigeriaLgas ? nigeriaLgas[state as keyof typeof nigeriaLgas] : [];
+  const localGovernments = lgasForState(state);
 
   if (!state) return { ok: false, field: "state", message: "Choose a state." };
   if (!name) {
     return { ok: false, field: "name", message: "Choose a local government." };
   }
-  if (!localGovernments.includes(name as (typeof localGovernments)[number])) {
+  if (!localGovernments.includes(name)) {
     return {
       ok: false,
       field: "name",
@@ -99,14 +98,13 @@ export async function updateLga(input: {
   const state = input.state.trim();
   const chairman = input.chairman.trim();
   const status = statusByLabel[input.status];
-  const localGovernments =
-    state in nigeriaLgas ? nigeriaLgas[state as keyof typeof nigeriaLgas] : [];
+  const localGovernments = lgasForState(state);
 
   if (!state) return { ok: false, field: "state", message: "Choose a state." };
   if (!name) {
     return { ok: false, field: "name", message: "Choose a local government." };
   }
-  if (!localGovernments.includes(name as (typeof localGovernments)[number])) {
+  if (!localGovernments.includes(name)) {
     return {
       ok: false,
       field: "name",
