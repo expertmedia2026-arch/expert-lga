@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 type FieldErrors = {
@@ -9,6 +10,7 @@ type FieldErrors = {
 };
 
 export function TenantLoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +33,11 @@ export function TenantLoginForm() {
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setErrors(validate(email, password));
+    const nextErrors = validate(email, password);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length === 0) {
+      router.push("/tenant");
+    }
   }
 
   return (

@@ -80,10 +80,10 @@ export function HomeHero() {
         </p>
         <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row">
           <Link
-            href="/application"
+            href="/vacancies"
             className="inline-flex h-12 min-w-[11.5rem] items-center justify-center bg-copper px-6 text-sm font-medium text-white transition-colors hover:bg-[#a84c1e]"
           >
-            Start Application
+            Vacancies
           </Link>
           <LoginMenu />
         </div>
